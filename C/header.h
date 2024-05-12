@@ -54,8 +54,8 @@ typedef struct
     float beam_axis_lim;
     index_type num_layers;
     float radii[MAX_LAYERS];
-    float parallelogramSlopes[MAX_LAYERS];
-    float radii_leverArm[MAX_LAYERS];
+    float parallelogramSlopes[MAX_LAYERS-1];
+    float radii_leverArm[MAX_LAYERS-1];
     float trapezoid_edges[MAX_LAYERS];
     float boundaryPoint_offset;
 } Environment;
