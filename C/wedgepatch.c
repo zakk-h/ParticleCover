@@ -26,7 +26,7 @@ void wedgePatch_init(wedgePatch *wp, wedgeSuperPoint *superpointsI, int superpoi
     get_end_layer(wp);
 }
 
-float straightLineProjectorFromLayerIJtoK(wedgePatch *wp, float z_i, float z_j, int i, int j, int k)
+float straightLineProjectorFromLayerIJtoK(wedgePatch *wp, float z_i, float z_j, int i, int j, int k) //delete wedgepatch parameter, not needed
 {
     float radius_i = 0;
     float radius_j = 0;
