@@ -84,6 +84,7 @@
     extern index_type num_layers;
 #endif
 
+
 typedef struct
 {
     index_type layer_num;
@@ -160,9 +161,8 @@ extern void importData();
 extern void addBoundaryPoint(float offset);
 extern void initWedgeSuperPoint(wedgeSuperPoint *wsp, Point *points, int pointCount);
 extern int areWedgeSuperPointsEqual(wedgeSuperPoint *wsp1, wedgeSuperPoint *wsp2);
-extern void initParallelogram(Parallelogram *pg, int layer_numI, float z1_minI, float z1_maxI, float shadow_bottomL_jRI, float shadow_bottomR_jRI, float shadow_bottomL_jLI, float shadow_bottomR_jLI, float pSlopeI);
 extern void wedgePatch_init(wedgePatch *wp, wedgeSuperPoint *superpointsI, int superpoint_count, float apexZ0I);
-extern float straightLineProjectorFromLayerIJtoK(wedgePatch *wp, float z_i, float z_j, int i, int j, int k);
+extern float straightLineProjectorFromLayerIJtoK(float z_i, float z_j, int i, int j, int k);
 extern float straightLineProjector(float z_top, float z_j, int j);
 extern void getParallelograms(wedgePatch *wp);
 extern void getShadows(wedgePatch *wp, float zTopMin, float zTopMax);
@@ -173,8 +173,8 @@ extern int comparePoints(const void *a, const void *b);
 extern void add_patch(wedgePatch *curr_patch);
 extern void delete_patch(int index);
 extern index_type get_index_from_z(int layer, float z_value);
-extern void solve(float apexZ0, int ppl, int nlines, bool leftRight);
-extern void makePatches_ShadowQuilt_fromEdges(float apexZ0, int stop, int ppl, bool leftRight);
+extern void solve(float apexZ0, int ppl, bool leftRight);
+extern void makePatches_ShadowQuilt_fromEdges(float apexZ0, int ppl, bool leftRight);
 extern void makePatch_alignedToLine(float apexZ0, float z_top, int ppl, bool leftRight, bool float_middleLayers_ppl);
 extern void wedge_test(float apexZ0, int ppl, int wedges[]);
 
