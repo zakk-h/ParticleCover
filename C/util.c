@@ -1,8 +1,8 @@
 #include "header.h"
 
-int floatCompare(const void *a, const void *b)
+int CONVERSION_TYPECompare(const void *a, const void *b)
 {
-    float diff = *(const float *)a - *(const float *)b;
+    CONVERSION_TYPE diff = *(const CONVERSION_TYPE *)a - *(const CONVERSION_TYPE *)b;
     if (diff < 0)
     {
         return -1;

@@ -1,6 +1,6 @@
 #include "header.h"
 
-void wedgePatch_init(wedgePatch *wp, wedgeSuperPoint *superpointsI, int superpoint_count, float apexZ0I)
+void wedgePatch_init(wedgePatch *wp, wedgeSuperPoint *superpointsI, int superpoint_count, CONVERSION_TYPE apexZ0I)
 {
     wp->end_layer = -1; 
     wp->left_end_layer = -1;
@@ -14,8 +14,8 @@ void wedgePatch_init(wedgePatch *wp, wedgeSuperPoint *superpointsI, int superpoi
     wp->shadow_fromTopToInnermost_topR_jL = 0;
     wp->shadow_fromTopToInnermost_topR_jR = 0;
 
-    for (size_t i = 0; i < superpoint_count; i++)
-    {                                          // size_t objects should only be non-negative and are more performant than ints
+    for (index_type i = 0; i < superpoint_count; ++i)
+    {
         wp->superpoints[i] = superpointsI[i]; // wp->superpoints is an array of pointers. Making the elements point to the elements in superpointsI.
     }
     wp->superpoint_count = superpoint_count;
@@ -26,11 +26,11 @@ void wedgePatch_init(wedgePatch *wp, wedgeSuperPoint *superpointsI, int superpoi
     get_end_layer(wp);
 }
 
-float straightLineProjectorFromLayerIJtoK(wedgePatch *wp, float z_i, float z_j, int i, int j, int k) //delete wedgepatch parameter, not needed
+CONVERSION_TYPE straightLineProjectorFromLayerIJtoK(CONVERSION_TYPE z_i, CONVERSION_TYPE z_j, int i, int j, int k)
 {
-    float radius_i = 0;
-    float radius_j = 0;
-    float radius_k = 0;
+    CONVERSION_TYPE radius_i = 0;
+    CONVERSION_TYPE radius_j = 0;
+    CONVERSION_TYPE radius_k = 0;
 
     if (i == 0)
     {
@@ -58,22 +58,22 @@ float straightLineProjectorFromLayerIJtoK(wedgePatch *wp, float z_i, float z_j, 
     }
 
     //local, shadows the global
-    float radii_leverArm = (radius_k - radius_i) / (radius_j - radius_i);
+    CONVERSION_TYPE radii_leverArm = (radius_k - radius_i) / (radius_j - radius_i);
 
     return z_i + (z_j - z_i) * radii_leverArm;
 }
 
-float straightLineProjector(float z_top, float z_j, int j)
+CONVERSION_TYPE straightLineProjector(CONVERSION_TYPE z_top, CONVERSION_TYPE z_j, int j)
 {
     //global radii_leverArm
-    float temp = radii_leverArm[j - 1];
+    CONVERSION_TYPE temp = radii_leverArm[j - 1];
     return z_top - (z_top - z_j) * temp;
 }
 
 void getParallelograms(wedgePatch *wp)
 {
-    float z1_min = max(wp->superpoints[0].min, -1 * trapezoid_edges[0]);
-    float z1_max = min(wp->superpoints[0].max, trapezoid_edges[0]);
+    CONVERSION_TYPE z1_min = max(wp->superpoints[0].min, -1 * trapezoid_edges[0]);
+    CONVERSION_TYPE z1_max = min(wp->superpoints[0].max, trapezoid_edges[0]);
 
     if (z1_min > z1_max)
     {
@@ -89,19 +89,19 @@ void getParallelograms(wedgePatch *wp)
     //     //exit(8);
     // }
     wp->parallelogram_count = 0; // we want to start at index 0 regardless and overwrite any old elements in the array to replicate the functionality of assigning a temp array.
-    for (int i = 1; i < wp->superpoint_count; i++)
+    for (int i = 1; i < wp->superpoint_count; ++i)
     {
         int j = i + 1;
 
-        float z_j_min = wp->superpoints[i].min;
-        float z_j_max = wp->superpoints[i].max;
+        CONVERSION_TYPE z_j_min = wp->superpoints[i].min;
+        CONVERSION_TYPE z_j_max = wp->superpoints[i].max;
 
-        float a = straightLineProjectorFromLayerIJtoK(z1_min, z_j_max, 1, j, num_layers); //1 is fine, not in cm/micron
-        float b = straightLineProjectorFromLayerIJtoK(z1_max, z_j_max, 1, j, num_layers);
-        float c = straightLineProjectorFromLayerIJtoK(z1_min, z_j_min, 1, j, num_layers);
-        float d = straightLineProjectorFromLayerIJtoK(z1_max, z_j_min, 1, j, num_layers);
+        CONVERSION_TYPE a = straightLineProjectorFromLayerIJtoK(z1_min, z_j_max, 1, j, num_layers); //1 is fine, not in cm/micron
+        CONVERSION_TYPE b = straightLineProjectorFromLayerIJtoK(z1_max, z_j_max, 1, j, num_layers);
+        CONVERSION_TYPE c = straightLineProjectorFromLayerIJtoK(z1_min, z_j_min, 1, j, num_layers);
+        CONVERSION_TYPE d = straightLineProjectorFromLayerIJtoK(z1_max, z_j_min, 1, j, num_layers);
 
-        float pSlope = (j != num_layers) ? parallelogramSlopes[j - 1] : INT_MAX;
+        CONVERSION_TYPE pSlope = (j != num_layers) ? parallelogramSlopes[j - 1] : LONG_MAX;
 
         // directly assign the values to the array
         if (wp->parallelogram_count < MAX_PARALLELOGRAMS_PER_PATCH)
@@ -119,10 +119,10 @@ void getParallelograms(wedgePatch *wp)
     }
 }
 
-void getShadows(wedgePatch *wp, float zTopMin, float zTopMax)
+void getShadows(wedgePatch *wp, CONVERSION_TYPE zTopMin, CONVERSION_TYPE zTopMax)
 {
-    float zTop_min;
-    float zTop_max;
+    CONVERSION_TYPE zTop_min;
+    CONVERSION_TYPE zTop_max;
     if (num_layers - 1 < 0)
     {
         zTop_min = zTopMin;
@@ -134,16 +134,16 @@ void getShadows(wedgePatch *wp, float zTopMin, float zTopMax)
         zTop_max = min(zTopMax, trapezoid_edges[num_layers - 1]);
     }
 
-    float topL_jL[MAX_SUPERPOINTS_IN_PATCH - 1];
-    float topL_jR[MAX_SUPERPOINTS_IN_PATCH - 1];
-    float topR_jL[MAX_SUPERPOINTS_IN_PATCH - 1];
-    float topR_jR[MAX_SUPERPOINTS_IN_PATCH - 1];
+    CONVERSION_TYPE topL_jL[MAX_SUPERPOINTS_IN_PATCH - 1];
+    CONVERSION_TYPE topL_jR[MAX_SUPERPOINTS_IN_PATCH - 1];
+    CONVERSION_TYPE topR_jL[MAX_SUPERPOINTS_IN_PATCH - 1];
+    CONVERSION_TYPE topR_jR[MAX_SUPERPOINTS_IN_PATCH - 1];
 
     for (int i = 0; i < wp->superpoint_count - 1; ++i)
     {
         int j = i + 1;
-        float z_j_min = wp->superpoints[i].min;
-        float z_j_max = wp->superpoints[i].max;
+        CONVERSION_TYPE z_j_min = wp->superpoints[i].min;
+        CONVERSION_TYPE z_j_max = wp->superpoints[i].max;
 
         topL_jL[i] = straightLineProjectorFromLayerIJtoK(zTop_min, z_j_min, num_layers, j, 1);
         topL_jR[i] = straightLineProjectorFromLayerIJtoK(zTop_min, z_j_max, num_layers, j, 1);
@@ -185,10 +185,10 @@ void get_acceptanceCorners(wedgePatch *wp)
     wp->flatBottom = true;
     wp->triangleAcceptance = false;
 
-    float a_corner_min = FLT_MAX;
-    float b_corner_min = FLT_MAX;
-    float c_corner_max = -FLT_MAX;
-    float d_corner_max = -FLT_MAX;
+    CONVERSION_TYPE a_corner_min = LONG_MAX;
+    CONVERSION_TYPE b_corner_min = LONG_MAX;
+    CONVERSION_TYPE c_corner_max = -LONG_MAX;
+    CONVERSION_TYPE d_corner_max = -LONG_MAX;
 
     // getting min or max corners in all parallelograms
     for (int i = 0; i < wp->parallelogram_count; ++i)
@@ -263,17 +263,17 @@ void get_acceptanceCorners(wedgePatch *wp)
 void get_end_layer(wedgePatch *wp)
 {
     // naming counterintuitive
-    float lambdaZLeftMax = -1 * INT_MAX + 2;
-    float lambdaZRightMin = INT_MAX - 2;
+    CONVERSION_TYPE lambdaZLeftMax = -1 * LONG_MAX + 2;
+    CONVERSION_TYPE lambdaZRightMin = LONG_MAX - 2;
     // assigning -1 to start because they should only hold non-negative integers
     wp->left_end_layer = -1;
     wp->right_end_layer = -1;
 
     // combined two independent loops
-    for (int i = 0; i < num_layers; i++)
+    for (int i = 0; i < num_layers; ++i)
     {
-        float lambdaZ_left = (wp->superpoints[i].min - wp->apexZ0) / radii[i];
-        float lambdaZ_right = (wp->superpoints[i].max - wp->apexZ0) / radii[i];
+        CONVERSION_TYPE lambdaZ_left = (wp->superpoints[i].min - wp->apexZ0) / radii[i];
+        CONVERSION_TYPE lambdaZ_right = (wp->superpoints[i].max - wp->apexZ0) / radii[i];
 
         if (lambdaZ_left > lambdaZLeftMax)
         {

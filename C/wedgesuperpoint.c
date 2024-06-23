@@ -3,8 +3,8 @@
 void initWedgeSuperPoint(wedgeSuperPoint *wsp, Point *points, int pointCount)
 {
     wsp->point_count = pointCount;
-    wsp->min = FLT_MAX;
-    wsp->max = -FLT_MAX;
+    wsp->min = LONG_MAX; //assigned opposite values so they get replaced instantly
+    wsp->max = -LONG_MAX;
 
     // more efficient approach
     // instead of making a temp array and then transferring contents, add the values directly
@@ -25,6 +25,6 @@ void initWedgeSuperPoint(wedgeSuperPoint *wsp, Point *points, int pointCount)
 int areWedgeSuperPointsEqual(wedgeSuperPoint *wsp1, wedgeSuperPoint *wsp2)
 {
     //return (wsp1->min == wsp2->min) && (wsp1->max == wsp2->max);
-    const float tolerance = 0.0001*CONVERSION_FACTOR;
+    const CONVERSION_TYPE tolerance = 0.0001*CONVERSION_FACTOR;
     return (fabs(wsp1->min - wsp2->min) < tolerance) && (fabs(wsp1->max - wsp2->max) < tolerance);
 }
