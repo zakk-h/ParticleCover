@@ -39,7 +39,7 @@
 #define MAX_SUPERPOINTS_IN_COVER (MAX_PATCHES * MAX_SUPERPOINTS_IN_PATCH)
 
 #ifdef MAIN_C
-    const index_type CONVERSION_FACTOR = 10000; //10k = 39k diff, 100k = 45k diff
+    const index_type CONVERSION_FACTOR = 1000000; //10k = 39k diff, 100k = 45k diff
     const CONVERSION_TYPE top_layer_lim = 50 * CONVERSION_FACTOR;
     const CONVERSION_TYPE beam_axis_lim = 15 * CONVERSION_FACTOR;
     const index_type num_layers = 5;

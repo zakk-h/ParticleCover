@@ -45,7 +45,7 @@ void wedge_test(CONVERSION_TYPE apexZ0, int ppl, int wedges[])
                     fprintf(myfile, "%d %.4f %d %.4f\n",
                             currentPt.layer_num,
                             (float)currentPt.phi/CONVERSION_FACTOR,
-                            (float)currentPt.radius/CONVERSION_FACTOR,
+                            currentPt.radius/CONVERSION_FACTOR,
                             (float)currentPt.z/CONVERSION_FACTOR);
                 }
             }

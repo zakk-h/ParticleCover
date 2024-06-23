@@ -23,18 +23,7 @@ int Point_load(Point *p)
         p->z = (z_temp * CONVERSION_FACTOR);
         p->radius = (radius_temp * CONVERSION_FACTOR);
         //p->radius = layer_num_temp*5*CONVERSION_FACTOR;
-        //fprintf(stderr, "loaded point with phi %ld", p->phi);
-
-        return 1; // successful load
-    }
-
-    if (scanf("(%d,%d,%f,%f)", &layer_num_temp, &radius_temp, &phi_temp, &z_temp) == 4)
-    {
-        p->layer_num = layer_num_temp;
-        p->phi = phi_temp * CONVERSION_FACTOR;
-        p->z = z_temp * CONVERSION_FACTOR;
-        p->radius = radius_temp * CONVERSION_FACTOR;
-        //p->radius = layer_num_temp*5*CONVERSION_FACTOR;
+        fprintf(stderr, "loaded point with phi %ld", p->radius);
 
         return 1; // successful load
     }
