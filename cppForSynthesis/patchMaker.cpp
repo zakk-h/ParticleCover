@@ -225,7 +225,7 @@ void add_patch(WEDGE_PATCH, index_type &n_patches, GPATCHES);
 void delete_patch(int index, index_type &n_patches, GPATCHES);
 index_type get_index_from_z(int layer, long z_value, GDARRAY);
 void solve(long apexZ0, int ppl, int nlines, bool leftRight, index_type &n_patches, GDARRAY, GPATCHES);
-void makePatches_ShadowQuilt_fromEdges(long apexZ0, int stop, int ppl, bool leftRight, index_type &n_patches, GDARRAY, GPATCHES);
+void makePatches_ShadowQuilt_fromEdges(int stop, int ppl, bool leftRight, index_type &n_patches, GDARRAY, GPATCHES);
 long solveNextColumn(long apexZ0, int stop, int ppl, bool leftRight, bool fix42, long saved_apexZ0, index_type &n_patches, GDARRAY, GPATCHES);
 void solveNextPatchPair(long apexZ0, int stop, int ppl, bool leftRight, bool fix42, long &saved_apexZ0, int &nPatchesInColumn, long &c_corner, long &projectionOfCornerToBeam, long &z_top_min, long &z_top_max, long &complementary_apexZ0, index_type &n_patches, GDARRAY, GPATCHES);
 void makeThirdPatch(int lastPatchIndex, long z_top_min, long z_top_max, long complementary_apexZ0, long apexZ0, int ppl, index_type &n_patches, GDARRAY, GPATCHES);
@@ -983,13 +983,13 @@ void solve(long apexZ0, int ppl, int nlines, bool leftRight, index_type &n_patch
             }
         }
     }
-    makePatches_ShadowQuilt_fromEdges(apexZ0, 1, ppl, leftRight, n_patches, GDarray, GDn_points, patches_superpoints, patches_parameters);
+    makePatches_ShadowQuilt_fromEdges(1, ppl, leftRight, n_patches, GDarray, GDn_points, patches_superpoints, patches_parameters);
 }
 
-void makePatches_ShadowQuilt_fromEdges(long apexZ0, int stop, int ppl, bool leftRight, index_type &n_patches, GDARRAY, GPATCHES) // TOP-LEVEL FUNCTION FOR VITIS
+void makePatches_ShadowQuilt_fromEdges(int stop, int ppl, bool leftRight, index_type &n_patches, GDARRAY, GPATCHES) // TOP-LEVEL FUNCTION FOR VITIS
 {
     bool fix42 = true;
-    apexZ0 = trapezoid_edges[0];
+    long apexZ0 = trapezoid_edges[0];
     long saved_apexZ0;
 
     while (apexZ0 > -1 * trapezoid_edges[0]) //consider how this works when we are expanding instead of retracting the trapezoid_edges
@@ -1743,7 +1743,6 @@ void wedge_test(long apexZ0, long z0_spacing, int ppl, long z0_luminousRegion, i
 
     for (index_type z = 0; z < wedges[1]; z++)
     { 
-        if(z<wedges[0]) continue;
         printf("wedge %d\n", z); //main print
         fprintf(myfile, "wedge %d\n", z); //file to diff
 
@@ -1754,6 +1753,8 @@ void wedge_test(long apexZ0, long z0_spacing, int ppl, long z0_luminousRegion, i
         #else
             importData(z, GDarray, GDn_points);
         #endif
+
+        if(z<wedges[0]) continue;
         
         addBoundaryPoint(static_cast<long>(0.0001 * INTEGER_FACTOR_CM), GDarray, GDn_points); // with default param
 
