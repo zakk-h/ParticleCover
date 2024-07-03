@@ -547,7 +547,7 @@ void getParallelograms(WEDGE_PATCH)
 
     if (z1_min > z1_max)
     {
-        z1_min = trapezoid_edges[0] + 1;
+        z1_min = trapezoid_edges[0] + 1*INTEGER_FACTOR_CM;
         z1_max = z1_min;
     }
 
@@ -1151,11 +1151,11 @@ void solveNextPatchPair(long apexZ0, int stop, int ppl, bool leftRight, bool fix
         long complementary_b = patches_parameters[lastPatchIndex][2][1][1];
 
         long white_space_height = max(original_c - complementary_a, original_d - complementary_b);
-        long previous_white_space_height = -1;
+        long previous_white_space_height = -1 * INTEGER_FACTOR_CM;
         int counter = 0;
         int counterUpshift = 0;
         index_type current_z_top_index = -1;
-        long previous_z_top_min = -999;
+        long previous_z_top_min = -999 * INTEGER_FACTOR_CM;
 
         while (getSolveNextPatchPairWhileCondition(lastPatchIndex, repeat_patch, repeat_original, white_space_height,
                                                    previous_white_space_height, current_z_top_index, GDarray, GDn_points, patches_superpoints, patches_parameters))
@@ -1227,11 +1227,9 @@ void makeThirdPatch(index_type lastPatchIndex, long z_top_min, long z_top_max, l
     long original_topR_jR = patches_parameters[secondLastPatchIndex][1][3][0];
     long original_topL_jR = patches_parameters[secondLastPatchIndex][1][1][0];
 
-    long horizontalOverlapTop = max(complementary_topR_jL - original_topR_jL, complementary_topR_jR - original_topR_jR);
-    long horizontalOverlapBottom = max(complementary_topL_jL - original_topL_jL, complementary_topL_jR - original_topL_jR);
+    long horizontalOverlapTop = -1*INTEGER_FACTOR_CM;
+    long horizontalOverlapBottom = -1*INTEGER_FACTOR_CM;
 
-    horizontalOverlapTop = -1;
-    horizontalOverlapBottom = -1;
     long newGapTop = static_cast<long>(-0.000001 * INTEGER_FACTOR_CM);
     long newGapBottom = static_cast<long>(-0.000001 * INTEGER_FACTOR_CM);
 
